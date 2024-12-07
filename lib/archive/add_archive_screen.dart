@@ -26,7 +26,7 @@ class _AddArchiveScreenState extends State<AddArchiveScreen> {
         return Scaffold(
           appBar: AppBar(
             title: Text(isEnglish ? 'Add Archive Info' : 'إضافة معلومات الأرشيف'),
-            automaticallyImplyLeading: false,
+            
             centerTitle: true,
           ),
           body: SingleChildScrollView(

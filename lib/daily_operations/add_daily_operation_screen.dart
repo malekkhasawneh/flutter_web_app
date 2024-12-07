@@ -83,7 +83,7 @@ class _AddDailyOperationsScreenState extends State<AddDailyOperationsScreen> {
             title: Text(
               isEnglish ? 'Daily Operations' : 'العمليات اليومية',
             ),
-            automaticallyImplyLeading: false,
+            
             centerTitle: true,
           ),
           body: SingleChildScrollView(

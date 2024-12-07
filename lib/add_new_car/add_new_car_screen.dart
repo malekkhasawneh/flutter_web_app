@@ -110,7 +110,7 @@ class _AddCarScreenState extends State<AddCarScreen> {
           appBar: AppBar(
             title: Text(isEnglish ? 'Add Car' : 'إضافة سيارة'),
             centerTitle: true,
-            automaticallyImplyLeading: false,
+            
             backgroundColor: Colors.transparent,
           ),
           body: LayoutBuilder(

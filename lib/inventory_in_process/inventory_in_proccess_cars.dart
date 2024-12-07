@@ -17,7 +17,7 @@ class InventoryInProcessCars extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Inventory'),
         centerTitle: true,
-        automaticallyImplyLeading: false,
+        
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('cars').snapshots(),

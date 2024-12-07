@@ -20,7 +20,7 @@ class CarCardsScreen extends StatelessWidget {
           appBar: AppBar(
             title: Text(isEnglish ? 'Operations' : 'العمليات'),
             centerTitle: true,
-            automaticallyImplyLeading: false,
+            
           ),
           body: StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance.collection('cars').snapshots(),

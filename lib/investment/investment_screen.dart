@@ -16,7 +16,7 @@ class InvestmentScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Investment'),
         centerTitle: true,
-        automaticallyImplyLeading: false,
+        
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('cars').snapshots(),

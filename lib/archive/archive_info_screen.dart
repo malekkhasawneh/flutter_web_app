@@ -19,7 +19,7 @@ class ArchiveInfoScreen extends StatelessWidget {
             title: Text(
               isEnglish ? 'Inventory in Process' : 'المخزون قيد التنفيذ',
             ),
-            automaticallyImplyLeading: false,
+            
             centerTitle: true,
           ),
           body: SingleChildScrollView(

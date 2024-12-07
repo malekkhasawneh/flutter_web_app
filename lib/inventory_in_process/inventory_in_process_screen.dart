@@ -13,7 +13,7 @@ class InventoryInProcess extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Inventory in Process'),
-        automaticallyImplyLeading: false,
+        
         centerTitle: true,
       ),
       body: SingleChildScrollView(

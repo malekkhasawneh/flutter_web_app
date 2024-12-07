@@ -23,7 +23,7 @@ class HomeScreen extends StatelessWidget {
           appBar: AppBar(
             title: Text(isEnglish ? 'Home' : 'الرئيسية'),
             centerTitle: true,
-            automaticallyImplyLeading: false,
+            
             actions: [
               Padding(
                 padding: const EdgeInsetsDirectional.only(end: 16),

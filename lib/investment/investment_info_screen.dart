@@ -13,7 +13,7 @@ class InvestmentInfoScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('${data['carType']} ${data['carModel']} investment info'),
-        automaticallyImplyLeading: false,
+        
         centerTitle: true,
       ),
       body: SingleChildScrollView(

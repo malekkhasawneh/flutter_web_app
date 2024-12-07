@@ -21,7 +21,7 @@ class ArchiveScreen extends StatelessWidget {
           appBar: AppBar(
             title: Text(isEnglish ? 'Archive' : 'الأرشيف'),
             centerTitle: true,
-            automaticallyImplyLeading: false,
+            
           ),
           body: StreamBuilder<QuerySnapshot>(
             stream: FirebaseFirestore.instance.collection('cars').snapshots(),
