@@ -17,7 +17,6 @@ class InventoryInProcessCars extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Inventory'),
         centerTitle: true,
-        
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('cars').snapshots(),
@@ -34,33 +33,32 @@ class InventoryInProcessCars extends StatelessWidget {
 
           final cars = snapshot.data!.docs
               .map((doc) {
-            Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-            data['collectionId'] = doc.id;
+                Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+                data['collectionId'] = doc.id;
 
-            // Check if repair or govCosts lists are empty
-            bool hasRepairs = (data['repair'] ?? []).isNotEmpty;
-            bool hasGovCosts = (data['govCosts'] ?? []).isNotEmpty;
+                // Check if repair or govCosts lists are empty
+                bool hasRepairs = (data['repair'] ?? []).isNotEmpty;
+                bool hasGovCosts = (data['govCosts'] ?? []).isNotEmpty;
 
-            // Only include the car if it has repairs or governmental costs and is not sold
-            bool isSold = data['isSold'] ?? false;
-            if ((hasRepairs || hasGovCosts) && !isSold) {
-              return {
-                'type': data['carType'] ?? 'Unknown',
-                'id': data['carId'] ?? 'No ID',
-                'image': data['images'] != null
-                    ? Uint8List.fromList(
-                    List<int>.from(jsonDecode(data['images'].first)))
-                    : null,
-                'createdAt': data['createdAt'] ?? 'Unknown',
-                'data': data,
-              };
-            } else {
-              return null;
-            }
-          })
+                // Only include the car if it has repairs or governmental costs and is not sold
+                bool isSold = data['isSold'] ?? false;
+                if ((hasRepairs || hasGovCosts) && !isSold) {
+                  return {
+                    'type': data['carType'] ?? 'Unknown',
+                    'id': data['carId'] ?? 'No ID',
+                    'image': data['images'] != null
+                        ? Uint8List.fromList(
+                            List<int>.from(jsonDecode(data['images'].first)))
+                        : null,
+                    'createdAt': data['createdAt'] ?? 'Unknown',
+                    'data': data,
+                  };
+                } else {
+                  return null;
+                }
+              })
               .where((car) => car != null)
               .toList();
-
 
           // Group cars by date
           final groupedCars = <String, List<Map<String, dynamic>>>{};
@@ -78,108 +76,168 @@ class InventoryInProcessCars extends StatelessWidget {
 
           return groupedCars.isNotEmpty
               ? SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Column(
-              children: groupedCars.entries.map((entry) {
-                return Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text(
-                        entry.key,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Wrap(
-                      runSpacing: 8.0,
-                      children: entry.value
-                          .map((car) => _buildCarCard(car, context))
-                          .toList(),
-                    ),
-                  ],
-                );
-              }).toList(),
-            ),
-          )
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
+                  child: Column(
+                    children: groupedCars.entries.map((entry) {
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Text(
+                              entry.key,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Wrap(
+                            runSpacing: 8.0,
+                            children: entry.value
+                                .map((car) => _buildCarCard(car, context))
+                                .toList(),
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                )
               : const Center(
-            child: Text('No cars available'),
-          );
+                  child: Text('No cars available'),
+                );
         },
       ),
     );
   }
 
   Widget _buildCarCard(Map<String, dynamic> car, BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => InventoryInProcess(
-                  data: car['data'],
-                )));
-      },
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
-        ),
-        elevation: 4.0,
-        child: SizedBox(
-          width: 300,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 200,
-                decoration: BoxDecoration(
-                  borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12.0)),
-                  image: car['image'] != null
-                      ? DecorationImage(
-                    image: MemoryImage(car['image']),
-                    fit: BoxFit.cover,
-                  )
-                      : null,
-                  color: car['image'] == null ? Colors.grey : null,
-                ),
-                child: car['image'] == null
-                    ? const Center(
-                  child: Text(
-                    'No Image',
-                    style: TextStyle(color: Colors.white),
+    return Stack(
+      children: [
+        InkWell(
+          onTap: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => InventoryInProcess(
+                          data: car['data'],
+                        )));
+          },
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            elevation: 4.0,
+            child: SizedBox(
+              width: 300,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    height: 200,
+                    decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(12.0)),
+                      image: car['image'] != null
+                          ? DecorationImage(
+                              image: MemoryImage(car['image']),
+                              fit: BoxFit.cover,
+                            )
+                          : null,
+                      color: car['image'] == null ? Colors.grey : null,
+                    ),
+                    child: car['image'] == null
+                        ? const Center(
+                            child: Text(
+                              'No Image',
+                              style: TextStyle(color: Colors.white),
+                            ),
+                          )
+                        : null,
                   ),
-                )
-                    : null,
-              ),
-              const SizedBox(height: 8.0),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  car['type'],
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                  const SizedBox(height: 8.0),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      car['type'],
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  car['id'],
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      car['id'],
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
                   ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+        PositionedDirectional(
+          bottom: 5,
+          end: 0,
+          child: TextButton.icon(
+            onPressed: () async {
+              final confirmed = await showDialog<bool>(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text('Delete Car'),
+                  content: const Text(
+                    'Are you sure you want to delete this car?',
+                  ),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.of(ctx).pop(false),
+                      child: const Text('Cancel'),
+                    ),
+                    ElevatedButton(
+                      onPressed: () => Navigator.of(ctx).pop(true),
+                      child: const Text('Delete'),
+                    ),
+                  ],
+                ),
+              );
+
+              if (confirmed == true) {
+                try {
+                  await FirebaseFirestore.instance
+                      .collection('cars')
+                      .doc(car['data']['collectionId'])
+                      .delete();
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Car deleted successfully.',
+                      ),
+                    ),
+                  );
+                } catch (e) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text(
+                        'Failed to delete the car.',
+                      ),
+                    ),
+                  );
+                }
+              }
+            },
+            icon: const Icon(Icons.delete, color: Colors.red),
+            label: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.red),
+            ),
+          ),
+        )
+      ],
     );
   }
 }

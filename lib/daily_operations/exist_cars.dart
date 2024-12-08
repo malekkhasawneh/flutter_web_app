@@ -117,72 +117,137 @@ class CarCardsScreen extends StatelessWidget {
 
   Widget _buildCarCard(
       Map<String, dynamic> car, BuildContext context, bool isEnglish) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => AddDailyOperationsScreen(data: car['data']),
+    return Stack(
+      children: [
+        InkWell(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => AddDailyOperationsScreen(data: car['data']),
+              ),
+            );
+          },
+          child: Card(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12.0),
+            ),
+            elevation: 4.0,
+            child: SizedBox(
+              width: 300,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Image Section
+                  Container(
+                    height: 200,
+                    decoration: BoxDecoration(
+                      borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(12.0)),
+                      image: car['image'] != null
+                          ? DecorationImage(
+                        image: MemoryImage(car['image']),
+                        fit: BoxFit.cover,
+                      )
+                          : null,
+                      color: car['image'] == null ? Colors.grey : null,
+                    ),
+                    child: car['image'] == null
+                        ? Center(
+                      child: Text(
+                        isEnglish ? 'No Image' : 'لا توجد صورة',
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    )
+                        : null,
+                  ),
+                  const SizedBox(height: 8.0),
+                  // Car Type and ID
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      car['type'],
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      car['id'],
+                      style: const TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        );
-      },
-      child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12.0),
         ),
-        elevation: 4.0,
-        child: SizedBox(
-          width: 300,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Container(
-                height: 200,
-                decoration: BoxDecoration(
-                  borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(12.0)),
-                  image: car['image'] != null
-                      ? DecorationImage(
-                    image: MemoryImage(car['image']),
-                    fit: BoxFit.cover,
-                  )
-                      : null,
-                  color: car['image'] == null ? Colors.grey : null,
+        PositionedDirectional(bottom: 5,end: 0,child:  TextButton.icon(
+          onPressed: () async {
+            final confirmed = await showDialog<bool>(
+              context: context,
+              builder: (ctx) => AlertDialog(
+                title: Text(isEnglish ? 'Delete Car' : 'حذف السيارة'),
+                content: Text(
+                  isEnglish
+                      ? 'Are you sure you want to delete this car?'
+                      : 'هل أنت متأكد أنك تريد حذف هذه السيارة؟',
                 ),
-                child: car['image'] == null
-                    ? Center(
-                  child: Text(
-                    isEnglish ? 'No Image' : 'لا توجد صورة',
-                    style: const TextStyle(color: Colors.white),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(ctx).pop(false),
+                    child: Text(isEnglish ? 'Cancel' : 'إلغاء'),
                   ),
-                )
-                    : null,
-              ),
-              const SizedBox(height: 8.0),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  car['type'],
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                  ElevatedButton(
+                    onPressed: () => Navigator.of(ctx).pop(true),
+                    child: Text(isEnglish ? 'Delete' : 'حذف'),
                   ),
-                ),
+                ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                child: Text(
-                  car['id'],
-                  style: const TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey,
+            );
+
+            if (confirmed == true) {
+              try {
+                await FirebaseFirestore.instance
+                    .collection('cars')
+                    .doc(car['data']['collectionId'])
+                    .delete();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      isEnglish
+                          ? 'Car deleted successfully.'
+                          : 'تم حذف السيارة بنجاح.',
+                    ),
                   ),
-                ),
-              ),
-            ],
+                );
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      isEnglish
+                          ? 'Failed to delete the car.'
+                          : 'فشل في حذف السيارة.',
+                    ),
+                  ),
+                );
+              }
+            }
+          },
+          icon: const Icon(Icons.delete, color: Colors.red),
+          label: Text(
+            isEnglish ? 'Delete' : 'حذف',
+            style: const TextStyle(color: Colors.red),
           ),
-        ),
-      ),
+        ),)
+      ],
     );
   }
+
 }
