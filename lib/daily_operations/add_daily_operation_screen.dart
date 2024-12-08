@@ -33,14 +33,14 @@ class _AddDailyOperationsScreenState extends State<AddDailyOperationsScreen> {
     // Use null-aware operator and check for null
     repairs = (widget.data['repair'] ?? []).isNotEmpty
         ? (widget.data['repair'] as List<dynamic>)
-        .map((item) => Map<String, String>.from(item))
-        .toList()
+            .map((item) => Map<String, String>.from(item))
+            .toList()
         : [];
 
     governmentalCosts = (widget.data['govCosts'] ?? []).isNotEmpty
         ? (widget.data['govCosts'] as List<dynamic>)
-        .map((item) => Map<String, String>.from(item))
-        .toList()
+            .map((item) => Map<String, String>.from(item))
+            .toList()
         : [];
   }
 
@@ -83,7 +83,6 @@ class _AddDailyOperationsScreenState extends State<AddDailyOperationsScreen> {
             title: Text(
               isEnglish ? 'Daily Operations' : 'العمليات اليومية',
             ),
-            
             centerTitle: true,
           ),
           body: SingleChildScrollView(
@@ -159,25 +158,36 @@ class _AddDailyOperationsScreenState extends State<AddDailyOperationsScreen> {
         const SizedBox(height: 16.0),
         repairs.isNotEmpty
             ? Padding(
-          padding: const EdgeInsetsDirectional.only(start: 16.0),
-          child: Text(isEnglish ? 'Repairs:' : 'الإصلاحات:'),
-        )
+                padding: const EdgeInsetsDirectional.only(start: 16.0),
+                child: Text(isEnglish ? 'Repairs:' : 'الإصلاحات:'),
+              )
             : const SizedBox.shrink(),
         ...repairs.map((repair) => ListTile(
-          title: Text(
-            '${isEnglish ? 'Repair' : 'الإصلاح'}: ${repair['type']!}',
-          ),
-          subtitle: Text(
-            '${isEnglish ? 'Cost' : 'التكلفة'}: ${repair['cost']}',
-          ),
-        )),
+              title: Text(
+                '${isEnglish ? 'Repair' : 'الإصلاح'}: ${repair['type']!}',
+              ),
+              subtitle: Text(
+                '${isEnglish ? 'Cost' : 'التكلفة'}: ${repair['cost']}',
+              ),
+              trailing: TextButton.icon(
+                onPressed: () {
+                  repairs.remove(repair);
+                  setState(() {});
+                },
+                icon: const Icon(Icons.delete, color: Colors.red),
+                label: Text(
+                  isEnglish ? 'Delete' : 'حذف',
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            )),
         repairs.isNotEmpty
             ? Padding(
-          padding: const EdgeInsetsDirectional.only(start: 16.0),
-          child: Text(
-            '${isEnglish ? 'Total' : 'الإجمالي'}: ${totalRepairPrice()}',
-          ),
-        )
+                padding: const EdgeInsetsDirectional.only(start: 16.0),
+                child: Text(
+                  '${isEnglish ? 'Total' : 'الإجمالي'}: ${totalRepairPrice()}',
+                ),
+              )
             : const SizedBox.shrink(),
       ],
     );
@@ -211,25 +221,37 @@ class _AddDailyOperationsScreenState extends State<AddDailyOperationsScreen> {
         const SizedBox(height: 16.0),
         governmentalCosts.isNotEmpty
             ? Padding(
-          padding: const EdgeInsetsDirectional.only(start: 16.0),
-          child: Text(isEnglish ? 'Governmental Costs:' : 'التكاليف الحكومية:'),
-        )
+                padding: const EdgeInsetsDirectional.only(start: 16.0),
+                child: Text(
+                    isEnglish ? 'Governmental Costs:' : 'التكاليف الحكومية:'),
+              )
             : const SizedBox.shrink(),
         ...governmentalCosts.map((cost) => ListTile(
-          title: Text(
-            '${isEnglish ? 'Service' : 'الخدمة'}: ${cost['name']!}',
-          ),
-          subtitle: Text(
-            '${isEnglish ? 'Cost' : 'التكلفة'}: ${cost['cost']}',
-          ),
-        )),
+              title: Text(
+                '${isEnglish ? 'Service' : 'الخدمة'}: ${cost['name']!}',
+              ),
+              subtitle: Text(
+                '${isEnglish ? 'Cost' : 'التكلفة'}: ${cost['cost']}',
+              ),
+              trailing: TextButton.icon(
+                onPressed: () {
+                  governmentalCosts.remove(cost);
+                  setState(() {});
+                },
+                icon: const Icon(Icons.delete, color: Colors.red),
+                label: Text(
+                  isEnglish ? 'Delete' : 'حذف',
+                  style: const TextStyle(color: Colors.red),
+                ),
+              ),
+            )),
         governmentalCosts.isNotEmpty
             ? Padding(
-          padding: const EdgeInsetsDirectional.only(start: 16.0),
-          child: Text(
-            '${isEnglish ? 'Total' : 'الإجمالي'}: ${totalGovPrice()}',
-          ),
-        )
+                padding: const EdgeInsetsDirectional.only(start: 16.0),
+                child: Text(
+                  '${isEnglish ? 'Total' : 'الإجمالي'}: ${totalGovPrice()}',
+                ),
+              )
             : const SizedBox.shrink(),
       ],
     );
@@ -273,9 +295,8 @@ class _AddDailyOperationsScreenState extends State<AddDailyOperationsScreen> {
       log('===================================== e $e');
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(isEnglish
-              ? 'Failed to add operations'
-              : 'فشل في إضافة العمليات'),
+          content: Text(
+              isEnglish ? 'Failed to add operations' : 'فشل في إضافة العمليات'),
         ),
       );
     }
